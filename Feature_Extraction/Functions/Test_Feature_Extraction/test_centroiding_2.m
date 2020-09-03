@@ -5,6 +5,7 @@ end
 
 function testCentroids(~)
     clc    %clear screen
+    addpath(genpath('../'))
     THRESHOLD = 14;
     STAR_MIN_PIXEL = 3;
     STAR_MAX_PIXEL = 50;
@@ -12,11 +13,10 @@ function testCentroids(~)
     r_allowed = 1; %allowed error
     arr_final_out = zeros(n+1, 12);
     M=0;
-    save('constants_feature_extraction_3.mat', 'THRESHOLD', 'STAR_MIN_PIXEL', 'STAR_MAX_PIXEL');
-    load('constants_feature_extraction_2.mat', 'PIXEL_WIDTH');
+    load("C:\Users\Millen\OneDrive\Documents\SSP Elec\STADS\Feature_Extraction\Functions\Test_Feature_Extraction\constants_feature_extraction_3.mat", "LENGTH", "BREADTH", "NUM_REGIONS", "NUM_RANGES_ROW", "STAR_MIN_PIXELS", "STAR_MAX_PIXELS", "PIXEL_SIZE");
     for I = 1: n
-        imgpath = "C:/Users/aravi/OneDrive/Documents/MATLAB/Simulation_3/Image_"+I+"/se_Image_"+I+".mat";   %input path
-        outpath = "C:/Users/aravi/OneDrive/Documents/MATLAB/Simulation_3/Image_"+I+"/se_Verification_"+I+".mat";    %output path
+        imgpath = "C:/Users/Millen/OneDrive/Documents/SSP Elec/STADS/Feature_Extraction/Functions/test_centroiding_2/testing_images/Image_"+I+"/se_Image_"+I+".mat";   %input path
+        outpath = "C:/Users/Millen/OneDrive/Documents/SSP Elec/STADS/Feature_Extraction/Functions/test_centroiding_2/testing_images/Image_"+I+"/se_Verification_"+I+".mat";    %output path
         outfilename = "M" + STAR_MIN_PIXEL + "_T" + THRESHOLD + ".xlsx";    %FE_out filename
         matfilename = "st_input_"+I;    %ST_in filename
         
@@ -29,7 +29,7 @@ function testCentroids(~)
         arr_exp_centroids = table2array(arr_exp_centroids); %changing table to array
         
         %-----SIMULATION------
-        [arr_centroids] = fe_centroiding_2(test_case); %simulating the function with given input
+        [arr_centroids] = fe_centroiding_rle(test_case); %simulating the function with given input
         num_stars = size(arr_centroids, 1); %num_stars = number of stars identified by the code
         
         %-----TESTING-----
@@ -59,6 +59,6 @@ function testCentroids(~)
     range_excel = "A2:L" + (n + 3);
     
     %-----SAVE SPREADSHEET-----
-    %writematrix(header_excel, outfilename, 'Sheet', 1, 'Range', 'A1:L1');
-    %writematrix(arr_final_out, outfilename, 'Sheet', 1, 'Range', range_excel);
+    writematrix(header_excel, outfilename, 'Sheet', 1, 'Range', 'A1:L1');
+    writematrix(arr_final_out, outfilename, 'Sheet', 1, 'Range', range_excel);
 end
