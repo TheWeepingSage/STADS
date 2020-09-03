@@ -14,7 +14,7 @@ output:
       the number of ranges in the row
 %}
     % loading constants
-    load("constants_feature_extraction_3.mat", "NUM_RANGES_ROW", "BREADTH", "THRESHOLD");
+    load("constants_feature_extraction_4.mat", "NUM_RANGES_ROW", "BREADTH", "THRESHOLD");
     
     % initializing variables
     arr_row_data = zeros(NUM_RANGES_ROW, 5);
@@ -45,5 +45,4 @@ output:
             range_bool  = 0;
         end
     end
-    arr_row_data = arr_row_data(1:num_ranges, :);
 end

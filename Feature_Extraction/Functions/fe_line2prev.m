@@ -1,4 +1,4 @@
-function [num_prev, arr_line_prev] = fe_line2prev(arr_line, num_line, arr_regions, arr_region_flags, arr_merge_regions)
+function [num_prev, arr_prev_row] = fe_line2prev(arr_row_data, num_ranges, arr_regions,  arr_merge_regions, arr_region_data)
 %{
 input:
 -arr_line:
@@ -18,29 +18,23 @@ output:
 -arr_line_prev:
     array containing the data of the row in the required format
 %}
-
-    arr_line_prev = zeros(num_line, 3);
-    if num_line>0
-        for i_convert = 1:num_line
-            if size(arr_merge_regions,1)>0
-                if arr_region_flags(i_convert)
-                    region = arr_regions(i_convert);
-                    region_flag = arr_region_flags(region);
-                end
-            end
+    arr_prev_row = zeros(num_ranges, 3);
+    if num_ranges>0
+        for i_convert = 1:num_ranges
+            region = arr_regions(i_convert);
             % if the region is to be merged, change the tag to the one it is to
             % be merged into
+            region_flag = arr_region_data(region, 4);
             if region_flag
                 region = arr_merge_regions(region_flag, 2);
             end
-
             % add tags and start and end values to the final array
-            arr_line_prev(i_convert, 1) = region;
-            arr_line_prev(i_convert, 2:3) = arr_line(i_convert, 4:5);
+            arr_prev_row(i_convert, 1) = region;
+            arr_prev_row(i_convert, 2:3) = arr_row_data(i_convert, 4:5);
         end
-        num_prev = num_line;
+        num_prev = num_ranges;
     else
         num_prev = 0;
-        arr_line_prev = [];
+        arr_prev_row = [];
     end
 end

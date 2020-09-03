@@ -1,4 +1,4 @@
-function [arr_region_data, arr_regions, num_tags, num_merge_regions, arr_merge_regions] = fe_compare_lines(arr_line_prev, arr_line, num_prev, num_line, num_tags)
+function [arr_region_data, arr_regions, num_tags, num_merge_regions, arr_merge_regions] = fe_compare_lines(arr_prev_row, arr_row_data, num_prev_row, num_ranges, num_tags)
 %{
 input: 
 arr_line_prev: 
@@ -33,44 +33,44 @@ returns:
 -num_merge_regions:
       number of nonempty rows in arr_merge_regions
 %}
-      
     % loading constants
-    load("constants_feature_extraction_3.mat", "NUM_REGIONS", "NUM_MERGE_LINE", "NUM_TAGS_MERGE");
-    if num_prev>0
+    load("constants_feature_extraction_4.mat", "NUM_REGIONS", "NUM_MERGE_LINE", "NUM_TAGS_MERGE");
+    if num_prev_row>0
         % initializing variables and arrays
         counter_int_start = 1;
         num_merge_regions = 0;
         arr_region_data = zeros(NUM_REGIONS, 4);
-        arr_regions = int32(zeros(num_line, 1));
+        arr_regions = int32(zeros(num_ranges, 1));
         arr_merge_regions = int32(zeros(NUM_MERGE_LINE, NUM_TAGS_MERGE));
 
 
         % looping over the ranges in the current row
-        for i_range = 1:num_line
-            start_range = arr_line(i_range, 4);
-            end_range = arr_line(i_range, 5);
+        for i_range = 1:num_ranges
+            start_range = arr_row_data(i_range, 4);
+            end_range = arr_row_data(i_range, 5);
             match_flag = 0;
 
             % looping over the remaining ranges in the previous row
-            for counter_int = counter_int_start:num_prev
-                [start_prev, end_prev] = arr_line_prev(counter_int, 2:3);
+            for counter_int = counter_int_start:num_prev_row
+                start_prev = arr_prev_row(counter_int, 3);
+                end_prev = arr_prev_row(counter_int, 3);
 
 
                 % break and store the tag if one intersecting range is found
 
                 if fe_compare_ranges(start_range, end_range, start_prev, end_prev)
-                    tag_prev = arr_line_prev(counter_int, 1);
+                    tag_prev = arr_prev_row(counter_int, 1);
                     arr_regions(i_range) = tag_prev;
-                    arr_region_data(tag_prev, 1:3) = arr_region_data(tag_prev, 1:3) + arr_line(i_range, 1:3);
+                    arr_region_data(tag_prev, 1:3) = arr_region_data(tag_prev, 1:3) + arr_row_data(i_range, 1:3);
                     match_flag = 1;
                     break
 
                 % if not, generate a new tag and move on to the next range in
                 % the current row
-                elseif start_prev > end_range
+                elseif start_prev > end_range || end_prev<start_range
                     num_tags = num_tags +1;
                     arr_regions(i_range) = num_tags;
-                    arr_region_data(num_tags, 1:3) = arr_line(i_range, 1:3);
+                    arr_region_data(num_tags, 1:3) = arr_row_data(i_range, 1:3);
                     counter_int_start = counter_int;
                     break
                 end
@@ -82,21 +82,21 @@ returns:
             if match_flag ==1
 
                 % find regions that intersect
-                for counter_int = (counter_int+1):num_prev
+                for counter_int = (counter_int+1):num_prev_row
 
                     % break if the next range in the previous row does not
                     % intersect, and set the tag of the last intersecting range
                     % in the previous row to the tag of the current range
-                    if not(fe_compare_ranges(start_range, end_range, arr_line_prev(counter_int, 2), arr_line_prev(counter_int, 3)))
+                    if not(fe_compare_ranges(start_range, end_range, arr_prev_row(counter_int, 2), arr_prev_row(counter_int, 3)))
                         counter_int_start = counter_int-1;
-                        arr_line_prev(counter_int, 1) = tag_prev;
+                        arr_prev_row(counter_int, 1) = tag_prev;
                         break
                     end
 
                     % sequence to be followed if the next range intersects but 
                     % does not share the same tag as the first intersecting range
-                    if arr_line_prev(counter_int, 1) ~= tag_prev
-                        tag_new = arr_line_prev(counter_int, 1);
+                    if arr_prev_row(counter_int, 1) ~= tag_prev
+                        tag_new = arr_prev_row(counter_int, 1);
 
 
                         if arr_region_data(tag_prev, 4) == 0
@@ -147,10 +147,11 @@ returns:
                 end
             end
         end
-    elseif num_line>0
-        arr_region_data(num_tags+1:num_tags+num_line, 1:3) = arr_line(:, 1:3);
-        arr_regions = (num_tags + 1):(num_tags+num_line);
-        num_tags = num_tags + num_line;
+    elseif num_ranges>0
+        arr_region_data = zeros(NUM_REGIONS, 4);
+        arr_region_data(num_tags+1:num_tags+num_ranges, 1:3) = arr_row_data(1:num_ranges, 1:3);
+        arr_regions = (num_tags + 1):(num_tags+num_ranges);
+        num_tags = num_tags + num_ranges;
         num_merge_regions = 0;
         arr_merge_regions = [];
     else

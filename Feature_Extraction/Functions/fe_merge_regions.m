@@ -8,7 +8,7 @@ input:
 -num_merge_regions:
     number of rows containing merge data in arr_merge_regions
 %}
-    load("constants_feature_extraction_3.mat", "NUM_MERGE_LINE")
+    load("constants_feature_extraction_4.mat", "NUM_MERGE_LINE")
     
     
     for i_merge = 1:NUM_MERGE_LINE
