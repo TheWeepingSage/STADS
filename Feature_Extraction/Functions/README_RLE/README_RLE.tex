@@ -118,7 +118,7 @@
 
 
     
-\section*{fe\_compare\_lines(arr\_line\_prev, arr\_line, num\_prev, num\_line, num\_tags)}
+\section*{fe\_compare\_lines(arr\_prev\_row, arr\_row\_data, num\_prev\_row, num\_ranges, num\_tags)}
 \textbf{Code author:} Millen Kanabar
 
 
@@ -137,8 +137,8 @@
     
 \textbf{Input:}
 \begin{enumerate}
-    \item \textbf{arr\_line\_prev:} array containing the first and last pixels of each range along with the corresponding tag for a distinct disjoint range in the previous row in each row. The ranges are ordered going from left to right
-    \item \textbf{arr\_line:} array containing data from the current row. The column-wise arrangement of the elements is as follows:
+    \item \textbf{arr\_prev\_row:} array containing the first and last pixels of each range along with the corresponding tag for a distinct disjoint range in the previous row in each row. The ranges are ordered going from left to right
+    \item \textbf{arr\_row\_data:} array containing data from the current row. The column-wise arrangement of the elements is as follows:
     
     \begin{tabular}{|c|c|c|c|c|}
         \hline
@@ -146,8 +146,8 @@
         \hline
     \end{tabular}
 
-    \item \textbf{num\_prev:} The number of bright ranges in the previous row
-    \item \textbf{num\_line:} The number of bright ranges in the current row
+    \item \textbf{num\_prev\_row:} The number of bright ranges in the previous row
+    \item \textbf{num\_ranges:} The number of bright ranges in the current row
     \item \textbf{num\_tags:} The number of tags already allotted
 \end{enumerate}
 
@@ -168,6 +168,8 @@
     \item  \textbf{arr\_merge\_regions:} Each row contains tags corresponding to a connected region, the first element indicating the number of tags in that row
     
     \item \textbf{num\_merge\_tags:} The number of nonempty rows in arr\_merge\_regions
+    
+    \item \textbf{num\_tags:} Updated number of tags already allotted
 \end{enumerate}
 
 \section*{fe\_add\_centroid\_data(arr\_centroid\_data, arr\_centroid\_data\_new, i\_row)}
@@ -197,7 +199,7 @@
     \item \textbf{arr\_centroid\_data:} The updated array containing the data from all rows parsed so far
 \end{enumerate}
 
-\section*{fe\_merge\_regions(arr\_centroids, arr\_merge\_regions, num\_merge)}
+\section*{fe\_merge\_regions(arr\_centroids, arr\_merge\_regions, num\_merge\_regions)}
 \textbf{Code author:} Millen Kanabar
 
 
@@ -216,6 +218,7 @@
 \begin{enumerate}
     \item \textbf{arr\_centroids:} The array containing the data to be worked upon. This is the pre-final data table after every row comparison
     \item \textbf{arr\_merge\_regions:} The array containing the details of the tags to be merged. The first element is the number of tags to be merged into one. The subsequent ones are tags to be merged into one.
+    \item \textbf{num\_merge\_regions:} Number of regions to be merged
 \end{enumerate}
 
 \textbf{Output:}
@@ -225,7 +228,7 @@
 
 \newpage
 
-\section*{fe\_line2prev(arr\_line, num\_line, arr\_regions, arr\_merge\_regions, \\ num\_merge\_regions)}
+\section*{fe\_line2prev(arr\_row\_data, num\_ranges, arr\_regions, arr\_merge\_regions, \\ arr\_region\_data)}
 \textbf{Code author:} Millen Kanabar
 
 
@@ -242,15 +245,17 @@
     
 \textbf{Inputs:}
 \begin{enumerate}
-    \item \textbf{arr\_line:} array of the form specified in the input description of fe\_conpare\_lines
-    \item \textbf{num\_line:} number of non-trivial rows in arr\_line
+    \item \textbf{arr\_row\_data:} array of the form specified in the input description of fe\_conpare\_lines
+    \item \textbf{num\_ranges:} number of non-trivial rows in arr\_line
     \item \textbf{arr\_regions:} array containing the tag of each row in arr\_line
     \item \textbf{arr\_merge\_regions:} The array containing the details of the tags to be merged. The first element is the number of tags to be merged into one. The subsequent ones are tags to be merged into one.
+    \item \textbf{arr\_region\_data:} Array whose fourth column contains the flag of the tag associated with the tag (which is equal to the row number). Zero if no flag is associated with the tag.
 \end{enumerate}
 
 \textbf{Output:}
 \begin{enumerate}
-    \item \textbf{arr\_lin\_prev:} Array of the form described in fe\_compare\_lines
+    \item \textbf{arr\_prev\_row:} Array of the form described in fe\_compare\_lines
+    \item \textbf{num\_prev:} Number of ranges in the row being processed
 \end{enumerate}
 
     \bibliographystyle{unsrt}
